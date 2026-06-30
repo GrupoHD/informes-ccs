@@ -52,6 +52,8 @@ export function useReport(user: User) {
   const [cleaning, setCleaning] = useState<ChecklistItem[]>(initItems(CLEANING_ITEMS))
   const [rounds,   setRounds]   = useState<ChecklistItem[]>(initRounds())
 
+  const [attachedImages, setAttachedImages] = useState<File[]>([])
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showModal, setShowModal]       = useState(false)
   const [submitError, setSubmitError]   = useState('')
@@ -158,7 +160,7 @@ export function useReport(user: User) {
 
       await addDoc(collection(db, 'reports'), payload)
 
-      await sendReportEmail(header.centro, header.fecha, header.turno, header.responsable, pdfBlob, fileName, config.mailRouting, user.email ?? '')
+      await sendReportEmail(header.centro, header.fecha, header.turno, header.responsable, pdfBlob, fileName, config.mailRouting, user.email ?? '', attachedImages)
 
       setShowModal(true)
     } catch (e: unknown) {
@@ -180,6 +182,7 @@ export function useReport(user: User) {
     setSecurity(initItems(SECURITY_ITEMS))
     setCleaning(initItems(CLEANING_ITEMS))
     setRounds(initRounds())
+    setAttachedImages([])
     setShowModal(false)
     setSubmitError('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -190,6 +193,7 @@ export function useReport(user: User) {
     security, cleaning, rounds, updateItem,
     addItem, removeItem, renameItem,
     addRound, removeRound,
+    attachedImages, setAttachedImages,
     isSubmitting, showModal, submitError,
     submitReport, resetForm,
   }

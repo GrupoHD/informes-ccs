@@ -25,6 +25,7 @@ export default function ReportPage({ user, onNavigateAdmin }: Props) {
     security, cleaning, rounds, updateItem,
     addItem, removeItem, renameItem,
     addRound, removeRound,
+    attachedImages, setAttachedImages,
     isSubmitting, showModal, submitError,
     submitReport, resetForm,
   } = useReport(user)
@@ -123,6 +124,8 @@ export default function ReportPage({ user, onNavigateAdmin }: Props) {
             onChange={(field: keyof ReportHeader, value: string) => updateHeader(field, value)}
             onSubmit={submitReport}
             onAutoFill={isAdmin ? autoFillValidation : undefined}
+            attachedImages={attachedImages}
+            onImagesChange={setAttachedImages}
           />
 
           {showModal && <SuccessModal onReset={resetForm} />}

@@ -1,18 +1,38 @@
+import { useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSignature, faCircleNotch, faRobot } from '@fortawesome/free-solid-svg-icons'
+import { faSignature, faCircleNotch, faRobot, faCamera, faXmark, faImage } from '@fortawesome/free-solid-svg-icons'
 import type { ReportHeader } from '../../types/report'
 
 interface Props {
-  obs:          string
-  firma:        string
-  isSubmitting: boolean
-  submitError:  string
-  onChange:     (field: keyof ReportHeader, value: string) => void
-  onSubmit:     () => void
-  onAutoFill?:  () => void
+  obs:            string
+  firma:          string
+  isSubmitting:   boolean
+  submitError:    string
+  onChange:       (field: keyof ReportHeader, value: string) => void
+  onSubmit:       () => void
+  onAutoFill?:    () => void
+  attachedImages: File[]
+  onImagesChange: (images: File[]) => void
 }
 
-export default function ValidationCard({ obs, firma, isSubmitting, submitError, onChange, onSubmit, onAutoFill }: Props) {
+export default function ValidationCard({
+  obs, firma, isSubmitting, submitError,
+  onChange, onSubmit, onAutoFill,
+  attachedImages, onImagesChange,
+}: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  function handleFilesSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    if (!files.length) return
+    onImagesChange([...attachedImages, ...files])
+    e.target.value = ''
+  }
+
+  function removeImage(index: number) {
+    onImagesChange(attachedImages.filter((_, i) => i !== index))
+  }
+
   return (
     <div className="card">
       <div className="card-title">
@@ -36,6 +56,53 @@ export default function ValidationCard({ obs, firma, isSubmitting, submitError, 
           value={obs}
           onChange={e => onChange('obs', e.target.value)}
         />
+      </div>
+
+      {/* ─── IMAGE ATTACHMENTS ─── */}
+      <div className="images-section">
+        <label className="field-label" style={{ marginBottom: 12 }}>
+          <FontAwesomeIcon icon={faCamera} style={{ marginRight: 6 }} />
+          Imágenes Adjuntas (Opcional)
+        </label>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          style={{ display: 'none' }}
+          onChange={handleFilesSelected}
+        />
+
+        {attachedImages.length > 0 && (
+          <div className="image-preview-grid">
+            {attachedImages.map((file, i) => (
+              <div key={i} className="image-preview-item">
+                <img src={URL.createObjectURL(file)} alt={file.name} />
+                <button
+                  className="image-preview-remove"
+                  onClick={() => removeImage(i)}
+                  title="Eliminar imagen"
+                  type="button"
+                >
+                  <FontAwesomeIcon icon={faXmark} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <button
+          className="btn-upload-images"
+          onClick={() => fileInputRef.current?.click()}
+          type="button"
+          disabled={isSubmitting}
+        >
+          <FontAwesomeIcon icon={faImage} />
+          {attachedImages.length === 0
+            ? 'Añadir imágenes'
+            : `${attachedImages.length} imagen${attachedImages.length > 1 ? 'es' : ''} · Añadir más`}
+        </button>
       </div>
 
       <div className="signature-wrap">
