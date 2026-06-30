@@ -37,6 +37,7 @@ export function useAuth() {
 
   const role: UserRole              = user ? getRoleFromEmail(user.email!) : 'operario'
   const gestorCenter: string | null = user ? (config.gestors[user.email!.toLowerCase()] ?? null) : null
+  const canEditStructure: boolean   = user ? config.canEditStructure.has(user.email!.toLowerCase()) : false
 
-  return { user, loading, role, gestorCenter, signInWithGoogle, signOut }
+  return { user, loading, role, gestorCenter, canEditStructure, signInWithGoogle, signOut }
 }

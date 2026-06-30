@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowLeft, faUsers, faPlus, faEdit, faTrash,
-  faSave, faTimes, faUserShield, faUserTie, faUser,
+  faSave, faTimes, faUserShield, faUserTie, faUser, faPencilRuler,
 } from '@fortawesome/free-solid-svg-icons'
 import { useUsers } from '../hooks/useUsers'
 import { useConfig } from '../context/ConfigContext'
@@ -22,7 +22,13 @@ const ROLE_ICONS = {
   operario: faUser,
 }
 
-const emptyForm = { email: '', role: 'operario' as UserRole, centro: '' }
+const ROLE_CAPABILITIES: Record<UserRole, string[]> = {
+  admin:    ['Ver y editar todos los informes', 'Gestionar usuarios y configuración', 'Editar estructura del formulario', 'Rellenar cualquier informe'],
+  gestor:   ['Ver y enviar informes de su centro asignado', 'Editar estructura del formulario', 'Rellenar informes de su centro'],
+  operario: ['Rellenar informes de su turno', 'Ver sus propios informes enviados'],
+}
+
+const emptyForm = { email: '', role: 'operario' as UserRole, centro: '', canEditStructure: false }
 
 export default function AdminPage({ onBack }: Props) {
   const { users, loading, addUser, updateUser, removeUser } = useUsers()
@@ -46,7 +52,7 @@ export default function AdminPage({ onBack }: Props) {
   }
 
   function openEdit(u: UserEntry) {
-    setForm({ email: u.email, role: u.role, centro: u.centro ?? '' })
+    setForm({ email: u.email, role: u.role, centro: u.centro ?? '', canEditStructure: u.canEditStructure ?? false })
     setErrorMsg('')
     setEditEntry(u)
   }
@@ -63,7 +69,7 @@ export default function AdminPage({ onBack }: Props) {
     if (err) { setErrorMsg(err); return }
     setSaving(true); setErrorMsg('')
     try {
-      await addUser(form.email.trim().toLowerCase(), form.role, form.centro || undefined)
+      await addUser(form.email.trim().toLowerCase(), form.role, form.centro || undefined, form.canEditStructure || undefined)
       setShowAdd(false)
     } catch { setErrorMsg('Error al guardar. Intenta de nuevo.') }
     finally  { setSaving(false) }
@@ -74,7 +80,7 @@ export default function AdminPage({ onBack }: Props) {
     if (err) { setErrorMsg(err); return }
     setSaving(true); setErrorMsg('')
     try {
-      await updateUser(form.email.trim().toLowerCase(), form.role, form.centro || undefined)
+      await updateUser(form.email.trim().toLowerCase(), form.role, form.centro || undefined, form.canEditStructure || undefined)
       setEditEntry(null)
     } catch { setErrorMsg('Error al guardar. Intenta de nuevo.') }
     finally  { setSaving(false) }
@@ -153,6 +159,7 @@ export default function AdminPage({ onBack }: Props) {
                   <th>Email</th>
                   <th>Rol</th>
                   <th>Centro</th>
+                  <th>Editar estructura</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -167,6 +174,11 @@ export default function AdminPage({ onBack }: Props) {
                       </span>
                     </td>
                     <td className="td-centro">{u.centro ?? <span className="td-none">—</span>}</td>
+                    <td className="td-canedit">
+                      {u.canEditStructure
+                        ? <span className="canedit-badge"><FontAwesomeIcon icon={faPencilRuler} /> Sí</span>
+                        : <span className="td-none">—</span>}
+                    </td>
                     <td className="td-actions">
                       <button className="btn-table-action btn-edit" onClick={() => openEdit(u)} title="Editar">
                         <FontAwesomeIcon icon={faEdit} />
@@ -262,14 +274,15 @@ export default function AdminPage({ onBack }: Props) {
 }
 
 interface FormProps {
-  form: { email: string; role: UserRole; centro: string }
-  onChange: (f: { email: string; role: UserRole; centro: string }) => void
+  form: { email: string; role: UserRole; centro: string; canEditStructure: boolean }
+  onChange: (f: { email: string; role: UserRole; centro: string; canEditStructure: boolean }) => void
   centers: string[]
   error: string
   emailReadOnly?: boolean
 }
 
 function UserForm({ form, onChange, centers, error, emailReadOnly }: FormProps) {
+  const caps = ROLE_CAPABILITIES[form.role]
   return (
     <div className="user-form">
       <div className="form-field">
@@ -289,12 +302,21 @@ function UserForm({ form, onChange, centers, error, emailReadOnly }: FormProps) 
         <select
           className="control"
           value={form.role}
-          onChange={e => onChange({ ...form, role: e.target.value as UserRole, centro: '' })}
+          onChange={e => onChange({ ...form, role: e.target.value as UserRole, centro: '', canEditStructure: false })}
         >
           <option value="admin">Admin</option>
           <option value="gestor">Gestor</option>
           <option value="operario">Operario</option>
         </select>
+      </div>
+
+      <div className="role-capabilities">
+        <div className="role-caps-title">
+          <FontAwesomeIcon icon={ROLE_ICONS[form.role]} /> Permisos del rol
+        </div>
+        <ul className="role-caps-list">
+          {caps.map(c => <li key={c}>{c}</li>)}
+        </ul>
       </div>
 
       {form.role === 'gestor' && (
@@ -311,9 +333,16 @@ function UserForm({ form, onChange, centers, error, emailReadOnly }: FormProps) 
         </div>
       )}
 
-      {form.role === 'operario' && (
-        <p className="form-note">Los operarios pueden ver el formulario pero no modificar su estructura.</p>
-      )}
+      <label className="canedit-toggle">
+        <input
+          type="checkbox"
+          checked={form.canEditStructure}
+          onChange={e => onChange({ ...form, canEditStructure: e.target.checked })}
+        />
+        <span className="canedit-toggle-label">
+          <FontAwesomeIcon icon={faPencilRuler} /> Permitir editar estructura del formulario
+        </span>
+      </label>
 
       {error && <p className="form-error">{error}</p>}
     </div>

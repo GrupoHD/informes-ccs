@@ -594,7 +594,7 @@ select.control {
 .stat-name { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
 
 /* Admin table */
-.admin-table-card { max-width: 900px; }
+.admin-table-card { width: 100%; }
 .admin-table-wrap { overflow-x: auto; }
 .admin-table {
   width: 100%;
@@ -634,7 +634,7 @@ select.control {
 .btn-delete:hover { background: #fef2f2; border-color: var(--danger); }
 .admin-loading { text-align: center; padding: 40px; color: var(--text-muted); }
 .admin-empty   { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; line-height: 1.6; }
-.admin-note    { max-width: 900px; font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
+.admin-note    { font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
 
 /* Modals */
 .modal-overlay {
@@ -699,3 +699,46 @@ select.control {
 .form-error { color: var(--danger); font-size: 12px; font-weight: 600; margin: 0; }
 .form-note  { color: var(--text-muted); font-size: 12px; line-height: 1.5; margin: 0;
               background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+
+/* Role capabilities box */
+.role-capabilities {
+  background: rgba(79,99,89,.07);
+  border: 1px solid rgba(79,99,89,.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.role-caps-title {
+  font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--hd-green-darker); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.role-caps-list {
+  margin: 0; padding: 0 0 0 16px; list-style: disc;
+}
+.role-caps-list li {
+  font-size: 12px; color: var(--text-muted); line-height: 1.7;
+}
+
+/* canEditStructure toggle */
+.canedit-toggle {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--bg); transition: border-color .15s, background .15s;
+}
+.canedit-toggle:has(input:checked) {
+  border-color: var(--hd-gold);
+  background: rgba(206,171,105,.07);
+}
+.canedit-toggle input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--hd-gold); cursor: pointer; flex-shrink: 0; }
+.canedit-toggle-label { font-size: 13px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+
+/* canEditStructure table badge */
+.td-canedit { vertical-align: middle; }
+.canedit-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700;
+  color: var(--hd-gold); background: rgba(206,171,105,.15);
+  border: 1px solid rgba(206,171,105,.35);
+  border-radius: 6px; padding: 3px 8px;
+}

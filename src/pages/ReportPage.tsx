@@ -18,7 +18,7 @@ interface Props {
 }
 
 export default function ReportPage({ user, onNavigateAdmin }: Props) {
-  const { role, gestorCenter, signOut } = useAuth()
+  const { role, gestorCenter, canEditStructure, signOut } = useAuth()
 
   const {
     header, updateHeader, lockedCenter,
@@ -30,7 +30,7 @@ export default function ReportPage({ user, onNavigateAdmin }: Props) {
   } = useReport(user)
 
   const progress  = useProgress(security, cleaning, rounds)
-  const canEdit   = role === 'admin' || role === 'gestor'
+  const canEdit   = role === 'admin' || role === 'gestor' || canEditStructure
   const isAdmin   = role === 'admin'
 
   function autoFillParams() {

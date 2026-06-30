@@ -4,15 +4,17 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth, db } from '../firebase'
 
 export interface AppConfig {
-  admins:      Set<string>
-  gestors:     Record<string, string>   // email → centro
-  mailRouting: Record<string, string>   // centro → email destinatario
+  admins:           Set<string>
+  gestors:          Record<string, string>   // email → centro
+  canEditStructure: Set<string>
+  mailRouting:      Record<string, string>   // centro → email destinatario
 }
 
 const defaultConfig: AppConfig = {
-  admins:      new Set(),
-  gestors:     {},
-  mailRouting: {},
+  admins:           new Set(),
+  gestors:          {},
+  canEditStructure: new Set(),
+  mailRouting:      {},
 }
 
 const ConfigContext = createContext<AppConfig>(defaultConfig)
@@ -40,11 +42,10 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       const mailData  = mailSnap.data()  ?? {}
 
       setConfig({
-        admins:      new Set<string>((rolesData.admins ?? []).map((e: string) => e.toLowerCase())),
-        gestors:     Object.fromEntries(
-          Object.entries(rolesData.gestors ?? {}).map(([k, v]) => [k.toLowerCase(), v])
-        ) as Record<string, string>,
-        mailRouting: mailData as Record<string, string>,
+        admins:           new Set<string>((rolesData.admins ?? []).map((e: string) => e.toLowerCase())),
+        gestors:          Object.fromEntries(Object.entries(rolesData.gestors ?? {}).map(([k, v]) => [k.toLowerCase(), v])) as Record<string, string>,
+        canEditStructure: new Set<string>((rolesData.canEditStructure ?? []).map((e: string) => e.toLowerCase())),
+        mailRouting:      mailData as Record<string, string>,
       })
     })
 
