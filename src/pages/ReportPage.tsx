@@ -12,9 +12,12 @@ import SuccessModal from '../components/ui/SuccessModal'
 import { faShieldAlt, faBroom } from '@fortawesome/free-solid-svg-icons'
 import type { ReportHeader, StatusValue } from '../types/report'
 
-interface Props { user: User }
+interface Props {
+  user: User
+  onNavigateAdmin?: () => void
+}
 
-export default function ReportPage({ user }: Props) {
+export default function ReportPage({ user, onNavigateAdmin }: Props) {
   const { role, gestorCenter, signOut } = useAuth()
 
   const {
@@ -62,6 +65,7 @@ export default function ReportPage({ user }: Props) {
         gestorCenter={gestorCenter}
         userEmail={user.email ?? ''}
         onSignOut={signOut}
+        onNavigateAdmin={onNavigateAdmin}
       />
 
       <main className="main-wrapper">

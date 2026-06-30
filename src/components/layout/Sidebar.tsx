@@ -1,18 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMapMarkerAlt, faLock, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faMapMarkerAlt, faLock, faSignOutAlt, faUsers } from '@fortawesome/free-solid-svg-icons'
 import ProgressCircle from './ProgressCircle'
 import { useConfig } from '../../context/ConfigContext'
 import type { UserRole } from '../../types/report'
 
 interface Props {
-  centro:         string
-  lockedCenter:   string | null
-  onCentroChange: (v: string) => void
-  progress:       number
-  role:           UserRole
-  gestorCenter:   string | null
-  userEmail:      string
-  onSignOut:      () => void
+  centro:            string
+  lockedCenter:      string | null
+  onCentroChange:    (v: string) => void
+  progress:          number
+  role:              UserRole
+  gestorCenter:      string | null
+  userEmail:         string
+  onSignOut:         () => void
+  onNavigateAdmin?:  () => void
 }
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -23,7 +24,7 @@ const ROLE_LABEL: Record<UserRole, string> = {
 
 export default function Sidebar({
   centro, lockedCenter, onCentroChange, progress,
-  role, userEmail, onSignOut,
+  role, userEmail, onSignOut, onNavigateAdmin,
 }: Props) {
   const { mailRouting } = useConfig()
   const CENTER_OPTIONS = Object.keys(mailRouting)
@@ -68,6 +69,15 @@ export default function Sidebar({
           <FontAwesomeIcon icon={faSignOutAlt} /> Cerrar sesión
         </button>
       </div>
+
+      {onNavigateAdmin && (
+        <div className="sidebar-nav">
+          <button className="btn-nav" onClick={onNavigateAdmin}>
+            <FontAwesomeIcon icon={faUsers} />
+            Gestionar Usuarios
+          </button>
+        </div>
+      )}
 
       <div className="nav-stats">
         <ProgressCircle pct={progress} />

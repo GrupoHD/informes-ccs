@@ -21,7 +21,9 @@
       "PowerShell($env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\\\Users\\\\jgazquez\\\\Downloads\\\\serviceAccount.json\"; node scripts/seed-config.mjs)",
       "PowerShell(firebase use informes-ccs; $env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\\\Users\\\\jgazquez\\\\Downloads\\\\serviceAccount.json\"; node scripts/seed-config.mjs)",
       "PowerShell(firebase projects:list)",
-      "PowerShell(firebase login --reauth)"
+      "PowerShell(firebase login --reauth)",
+      "Bash(npm run *)",
+      "Bash(firebase deploy *)"
     ]
   }
 }
