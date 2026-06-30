@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Remove-Item \"c:\\\\Users\\\\jgazquez\\\\proyectos\\\\reportesCCs-app\\\\src\\\\config\\\\roles.ts\" -Force)",
+      "Bash(Remove-Item \"c:\\\\Users\\\\jgazquez\\\\proyectos\\\\reportesCCs-app\\\\src\\\\config\\\\mailRouting.ts\" -Force)",
+      "Bash(firebase --version)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); gcloud --version)",
+      "PowerShell(gcloud auth login *)",
+      "PowerShell(gcloud config set project *)",
+      "PowerShell(gsutil cors *)",
+      "PowerShell(gsutil ls *)",
+      "PowerShell(gcloud storage buckets list *)",
+      "PowerShell($gcloudPath = \\(Get-ChildItem \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\" -Recurse -Filter \"gcloud.cmd\" -ErrorAction SilentlyContinue | Select-Object -First 1\\).DirectoryName; if \\(-not $gcloudPath\\) { $gcloudPath = \\(Get-ChildItem \"C:\\\\Program Files\\\\Google\\\\Cloud SDK\" -Recurse -Filter \"gcloud.cmd\" -ErrorAction SilentlyContinue | Select-Object -First 1\\).DirectoryName }; Write-Output \"Found: $gcloudPath\")",
+      "PowerShell(& \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" storage buckets update gs://reportes-cc.firebasestorage.app --cors-file=cors.json)",
+      "PowerShell(& \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" storage buckets list 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" projects list 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gcloud.cmd\" config set project reportes-cc 2>&1; & \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gsutil.cmd\" cors set cors.json gs://reportes-cc.firebasestorage.app 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\jgazquez\\\\AppData\\\\Local\\\\Google\\\\Cloud SDK\\\\google-cloud-sdk\\\\bin\\\\gsutil.cmd\" ls 2>&1)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\jgazquez\" -Filter \"*serviceAccount*\" -Recurse -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object FullName)",
+      "PowerShell($env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\\\Users\\\\jgazquez\\\\Downloads\\\\serviceAccount.json\"; node scripts/seed-config.mjs)",
+      "PowerShell(firebase use informes-ccs; $env:GOOGLE_APPLICATION_CREDENTIALS=\"C:\\\\Users\\\\jgazquez\\\\Downloads\\\\serviceAccount.json\"; node scripts/seed-config.mjs)",
+      "PowerShell(firebase projects:list)",
+      "PowerShell(firebase login --reauth)"
+    ]
+  }
+}
